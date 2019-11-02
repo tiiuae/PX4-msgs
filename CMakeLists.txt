@@ -13,6 +13,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+find_package(rosidl_generator_dds_idl REQUIRED)
 
 # find ROS distro
 set(ROS_DISTRO)
@@ -20,11 +21,6 @@ if(DEFINED ENV{ROS2_DISTRO})
   set(ROS_DISTRO $ENV{ROS2_DISTRO})
 else()
   set(ROS_DISTRO $ENV{ROS_DISTRO})
-endif()
-
-if(${ROS_DISTRO} MATCHES "ardent" OR ${ROS_DISTRO} MATCHES "bouncy" OR
-   ${ROS_DISTRO} MATCHES "crystal")
-  find_package(rosidl_generator_dds_idl REQUIRED)
 endif()
 
 # ##############################################################################
@@ -37,7 +33,13 @@ file(GLOB PX4_MSGS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${MSGS_DIR}/*.msg")
 
 file(GLOB ROS_MSG_DIR_LIST "${MSGS_DIR}/*.msg")
 
-set(ROS_MSG_DIR_LIST "${ROS_MSG_DIR_LIST}" CACHE INTERNAL "ROS_MSG_DIR_LIST")
+set(TUPLES_LIST)
+foreach(file ${ROS_MSG_DIR_LIST})
+  get_filename_component(DIR "${file}" DIRECTORY)
+  get_filename_component(PARENT_DIR "${DIR}" DIRECTORY)
+  get_filename_component(FILE_NAME ${file} NAME)
+  list(APPEND TUPLES_LIST "${PARENT_DIR}:msg/${FILE_NAME}")
+endforeach()
 
 if(NOT "${PX4_MSGS}" STREQUAL "")
   # Generate introspection typesupport for C and C++ and IDL files
@@ -47,13 +49,11 @@ if(NOT "${PX4_MSGS}" STREQUAL "")
                              builtin_interfaces
                              ADD_LINTER_TESTS)
 
-  # Generate Fast RTPS IDL files (previous to Dashing, so to make the IDL
-  # compatible with the upstream PX4 IDL generator)
-  if(${ROS_DISTRO} MATCHES "ardent" OR ${ROS_DISTRO} MATCHES "bouncy" OR
-     ${ROS_DISTRO} MATCHES "crystal")
+    # Generate Fast RTPS IDL files (previous to Dashing, so to make the IDL
+    # compatible with the upstream PX4 IDL generator)
     rosidl_generate_dds_interfaces(${PROJECT_NAME}__fastrtps_idl
-                                   IDL_FILES
-                                   ${ROS_MSG_DIR_LIST}
+                                   IDL_TUPLES
+                                   ${TUPLES_LIST}
                                    OUTPUT_SUBFOLDERS
                                    "dds_fastrtps")
     # rosidl_generator_dds_idl requires a target to generate the IDL files
@@ -61,7 +61,6 @@ if(NOT "${PX4_MSGS}" STREQUAL "")
     file(WRITE ${MSGS_DIR}/idl.cc "int main() { return 0; }")
     add_executable(idl_target ${MSGS_DIR}/idl.cc)
     add_dependencies(idl_target ${PROJECT_NAME}__fastrtps_idl)
-  endif()
 else()
   message(FATAL_ERROR "No PX4 msgs found to generate interfaces to!")
 endif()
