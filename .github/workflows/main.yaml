@@ -61,3 +61,4 @@ jobs:
                      --target-props COMMIT="$GITHUB_SHA" \
                      "$pkg" \
                      "$ARTIFACTORY_REPO"
+
