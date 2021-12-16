@@ -1,0 +1,3 @@
+rosidl_default_generators:
+    ubuntu: [ros-ROS_DISTRO-rosidl-default-generators]
+

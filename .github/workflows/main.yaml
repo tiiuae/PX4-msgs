@@ -7,28 +7,27 @@ on:
     branches: [ master ]
 
 jobs:
-  tii-communication-link-deb:
+  tii-px4-msgs-deb:
     runs-on: ubuntu-latest
-    steps:
+    strategy:
+      matrix:
+        ros2_distro: [foxy, galactic]
 
+    steps:
       - name: Checkout PX4-msgs
         uses: actions/checkout@v2
         with:
           path: PX4-msgs
 
-      - name: Checkout ci-scripts
-        uses: actions/checkout@v2
-        with:
-          repository: tiiuae/fogsw-ci-scripts
-          path: fogsw-ci-scripts
-
       # Run docker build
-      - name: Run fog-sw docker build
+      - name: Run px4-msgs docker build
         run: |
           set -eux
           mkdir bin
-          pushd fogsw-ci-scripts
-          ./generate_deb.sh ../PX4-msgs ../bin/
+          pushd PX4-msgs
+          export ROS=1
+          export ROS_DISTRO=${{ matrix.ros2_distro }}
+          ./build.sh ../bin/
           popd
 
       - name: Install jfrog CLI tool
@@ -57,7 +56,7 @@ jobs:
           set -exu
           jfrog rt c import "$ARTIFACTORY_TOKEN"
           jfrog rt ping
-          pkg=$(find bin -name 'ros-foxy-px4-msgs*.deb')
+          pkg=$(find bin -name 'ros-${{ matrix.ros2_distro }}-px4-msgs*.deb')
           jfrog rt u --deb "$DISTRIBUTION/$COMPONENT/$ARCHITECTURE" \
                      --target-props COMMIT="$GITHUB_SHA" \
                      --build-name "$BUILD_NAME" \
