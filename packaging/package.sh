@@ -107,9 +107,6 @@ bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro ${ROS_
     && fakeroot debian/rules clean \
     && fakeroot debian/rules binary || exit 1
 
-echo "[INFO] Clean up."
-rm -rf deps_ws obj-x86_64-linux-gnu debian
-
 echo "[INFO] Move debian packages to volume."
 mv ${mod_dir}/../*.deb ${mod_dir}/../*.ddeb ${mod_dir}
 
