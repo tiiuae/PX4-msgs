@@ -24,6 +24,14 @@ RUN groupadd -g $GID builder && \
 
 RUN echo "deb [trusted=yes] https://ssrc.jfrog.io/artifactory/ssrc-debian-public-remote focal fog-sw" >> /etc/apt/sources.list
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-$ROS_DISTRO-rmw-fastrtps-cpp \
+    ros-$ROS_DISTRO-rmw-fastrtps-shared-cpp \
+    ros-$ROS_DISTRO-rmw-implementation \
+    ros-$ROS_DISTRO-rosidl-typesupport-fastrtps-cpp \
+    ros-$ROS_DISTRO-rosidl-typesupport-fastrtps-c \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN mkdir -p /$PACKAGE_NAME/packaging
 
 COPY packaging/rosdep.yaml packaging/rosdep.sh /$PACKAGE_NAME/packaging/
