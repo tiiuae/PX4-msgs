@@ -15,9 +15,6 @@ jobs:
         with:
           path: PX4-msgs
       - name: Run px4-msgs docker build
-        env:
-          ROS: 1
-          PACKAGE_NAME: px4_msgs
         run: |
           set -eux
           mkdir bin
