@@ -3,38 +3,15 @@
 set -euxo pipefail
 
 output_dir=$1
-
-git_commit_hash=${2:-$(git rev-parse HEAD)}
-
-git_version_string=${3:-$(git log --date=format:%Y%m%d --pretty=~git%cd.%h -n 1)}
-
+git_commit_hash=${2:-$(git rev-parse --short HEAD)}
 build_number=${GITHUB_RUN_NUMBER:=0}
 
-ros_distro=${ROS_DISTRO:=foxy}
-
-iname=${PACKAGE_NAME:=px4-msgs}
-
-iversion=${PACKAGE_VERSION:=latest}
-
 docker build \
-  --build-arg UID=$(id -u) \
-  --build-arg GID=$(id -g) \
-  --build-arg ROS_DISTRO=${ros_distro} \
-  --build-arg PACKAGE_NAME=${iname} \
-  --pull \
-  -f Dockerfile.build_env -t "${iname}_build:${iversion}" .
+    --build-arg BUILD_NUMBER=${build_number} \
+    -t "ghcr.io/tiiuae/tii-px4-msgs:sha-${git_commit_hash}" .
 
-docker run \
-  --rm \
-  -v $(pwd):/${iname}/sources \
-  ${iname}_build:${iversion} \
-  ./packaging/package.sh \
-  -b ${build_number} \
-  -g ${git_commit_hash} \
-  -v ${git_version_string}
-
-mkdir -p ${output_dir}
-cp *.deb *.ddeb ${output_dir}
-rm -Rf *.deb *.ddeb
+container_id=$(docker create ghcr.io/tiiuae/tii-px4-msgs:sha-${git_commit_hash})
+docker cp ${container_id}:/output_dir/. ${output_dir}
+docker rm -v ${container_id}
 
 exit 0
