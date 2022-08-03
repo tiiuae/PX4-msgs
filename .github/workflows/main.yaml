@@ -9,21 +9,19 @@ on:
 jobs:
   tii-px4-msgs-deb:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ros2_distro: [foxy, galactic]
     steps:
       - name: Checkout PX4-msgs
         uses: actions/checkout@v2
         with:
           path: PX4-msgs
       - name: Run px4-msgs docker build
+        env:
+          ROS: 1
+          PACKAGE_NAME: px4_msgs
         run: |
           set -eux
           mkdir bin
           pushd PX4-msgs
-          export ROS=1
-          export ROS_DISTRO=${{ matrix.ros2_distro }}
           ./build.sh ../bin/
           popd
       - name: Upload build
