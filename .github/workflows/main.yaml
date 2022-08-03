@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PX4-msgs
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: PX4-msgs
       - name: Run px4-msgs docker build
