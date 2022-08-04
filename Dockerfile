@@ -1,4 +1,4 @@
-FROM ghcr.io/tiiuae/fog-ros-baseimage:builder-3dcb78d
+FROM ghcr.io/tiiuae/fog-ros-baseimage:builder-1621e3a
 
 ARG BUILD_NUMBER
 
