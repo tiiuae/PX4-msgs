@@ -2,9 +2,9 @@ name: main
 
 on:
   push:
-    branches: [ main ]
+    branches: [ humble_main ]
   pull_request:
-    branches: [ main ]
+    branches: [ humble_main ]
 
 jobs:
   tii-px4-msgs-deb:
@@ -40,11 +40,11 @@ jobs:
           path: bin
       - uses: jfrog/setup-jfrog-cli@v2
         env:
-          JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY_TOKEN }}
+          JF_ARTIFACTORY_1: ${{ secrets.JFROG_EU_SAAS_TOKEN }}
       - name: Upload to Artifactory
         env:
-          ARTIFACTORY_REPO: debian-public-local
-          DISTRIBUTION: focal
+          ARTIFACTORY_REPO: ssrc-deb-public-local
+          DISTRIBUTION: jammy
           COMPONENT: fog-sw
           ARCHITECTURE: amd64
           BUILD_NAME: px4-msgs

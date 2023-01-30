@@ -1,4 +1,4 @@
-FROM ghcr.io/tiiuae/fog-ros-baseimage:builder-ae21266
+FROM ghcr.io/tiiuae/fog-ros-baseimage-builder:dp-4266_humble_upgrade
 
 ARG BUILD_NUMBER=0
 
