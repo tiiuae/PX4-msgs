@@ -50,6 +50,7 @@ jobs:
       - name: Run yocto distro build
         run: |
           pushd drone-yocto > /dev/null
+          apt install -y chrpath diffstat
           TEMPLATECONF=meta-ssrc-ros2/conf/saluki-template source oe-init-build-env build-riscv
           cd .. # or cd to main dir
           DISTRO=drone bitbake fog-px4-msgs-deb-package-build-image
