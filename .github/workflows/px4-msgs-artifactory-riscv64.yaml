@@ -36,7 +36,7 @@ jobs:
 
           pushd drone-yocto > /dev/null
           # Create a recipe for px4_msgs version X
-          mv meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_*-git.bb meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_$VERSION-git.bb
+          mv -f meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_*-git.bb meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_$VERSION-git.bb
           # Fix src branch
           sed -i 's/=main/=${GITHUB_REF##*/}/g' px4-msgs_*-git.bb
           # Fix SRCREV
