@@ -43,7 +43,7 @@ jobs:
           # Fix src branch
           sed -i "s/=main/=${GITHUB_REF##*/}/g" meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_*-git.bb
           # Fix SRCREV
-          sed -i 's/SRCREV.*/SRCREV = "$GITHUB_SHA"/' meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_*-git.bb
+          sed -i "s/SRCREV.*/SRCREV = "$GITHUB_SHA"/" meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_*-git.bb
           cat meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_*-git.bb
           popd > /dev/null
 
