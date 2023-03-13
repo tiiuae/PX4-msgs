@@ -16,6 +16,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: tiiuae/drone-yocto
+          ref: fog_hyper_supports
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
           path: drone-yocto
