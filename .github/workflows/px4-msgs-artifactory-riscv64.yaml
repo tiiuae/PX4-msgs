@@ -38,7 +38,6 @@ jobs:
           # Create a recipe for px4_msgs version X
           mkdir meta-ssrc-ros2/recipes-support/px4-msgs/tmp
           mv meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_*-git.bb meta-ssrc-ros2/recipes-support/px4-msgs/tmp/px4-msgs_$VERSION-git.bb
-          rm meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_*-git.bb
           mv meta-ssrc-ros2/recipes-support/px4-msgs/tmp/px4-msgs_*-git.bb meta-ssrc-ros2/recipes-support/px4-msgs/
           rm -rf meta-ssrc-ros2/recipes-support/px4-msgs/tmp
           # Fix src branch
