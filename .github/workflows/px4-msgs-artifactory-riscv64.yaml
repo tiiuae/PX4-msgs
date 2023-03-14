@@ -36,30 +36,32 @@ jobs:
           path: px4_msgs
 
       - name: Modify px4_msgs recipe in drone-yocto
+        env:
+          RECIPE_FILE_PATH: meta-ssrc-ros2/recipes-support/px4-msgs
+          RECIPE_FILE_PATTERN: px4-msgs_*-git.bb
         run: |
           set -eux
           pushd px4_msgs > /dev/null
           # Get current px4_msgs version
           VERSION=$(grep '<version>' package.xml | sed 's/<\/\?version>//g' | awk '{$1=$1};1')
           popd > /dev/null
-
           pushd drone-yocto > /dev/null
           # Create a recipe for px4_msgs version X
-          mkdir meta-ssrc-ros2/recipes-support/px4-msgs/tmp
-          mv meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_*-git.bb meta-ssrc-ros2/recipes-support/px4-msgs/tmp/px4-msgs_$VERSION-git.bb
-          mv meta-ssrc-ros2/recipes-support/px4-msgs/tmp/px4-msgs_*-git.bb meta-ssrc-ros2/recipes-support/px4-msgs/
-          rm -rf meta-ssrc-ros2/recipes-support/px4-msgs/tmp
+          mkdir $RECIPE_FILE_PATH/tmp
+          mv $RECIPE_FILE_PATH/$RECIPE_FILE_PATTERN $RECIPE_FILE_PATH/tmp/px4-msgs_$VERSION-git.bb
+          mv $RECIPE_FILE_PATH/tmp/$RECIPE_FILE_PATTERN $RECIPE_FILE_PATH/
+          rm -rf $RECIPE_FILE_PATH/tmp
           # Fix src branch
-          sed -i "s/=main/=${GITHUB_REF##*/}/g" meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_*-git.bb
+          sed -i "s/=main/=${GITHUB_REF##*/}/g" $RECIPE_FILE_PATH/$RECIPE_FILE_PATTERN
           # Fix SRCREV
-          sed -i "s/SRCREV.*/SRCREV = \"$GITHUB_SHA\"/" meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_*-git.bb
-          cat meta-ssrc-ros2/recipes-support/px4-msgs/px4-msgs_*-git.bb
+          sed -i "s/SRCREV.*/SRCREV = \"$GITHUB_SHA\"/" $RECIPE_FILE_PATH/$RECIPE_FILE_PATTERN
+          cat $RECIPE_FILE_PATH/$RECIPE_FILE_PATTERN
           popd > /dev/null
 
       - name: Run yocto distro build
         run: |
           pushd drone-yocto > /dev/null
-          sudo apt install -y chrpath diffstat
+          sudo apt install -y chrpath diffstat && sudo rm -rf /var/lib/apt/lists/*
           TEMPLATECONF=meta-ssrc-ros2/conf/saluki-template source oe-init-build-env build-riscv
           cd .. # or cd to main dir
           DISTRO=drone bitbake px4-msgs
