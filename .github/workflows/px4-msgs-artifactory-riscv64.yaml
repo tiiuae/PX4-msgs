@@ -12,6 +12,11 @@ jobs:
       matrix:
         ros2_distro: [galactic]
     steps:
+      - name: Clean up diskspace
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
       - name: Checkout drone-yocto repo
         uses: actions/checkout@v3
         with:
