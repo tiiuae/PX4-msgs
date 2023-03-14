@@ -12,11 +12,14 @@ jobs:
       matrix:
         ros2_distro: [galactic]
     steps:
-      - name: Clean up diskspace
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-          df -h
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-android: 'true'
 
       - name: Checkout drone-yocto repo
         uses: actions/checkout@v3
@@ -59,7 +62,7 @@ jobs:
           sudo apt install -y chrpath diffstat
           TEMPLATECONF=meta-ssrc-ros2/conf/saluki-template source oe-init-build-env build-riscv
           cd .. # or cd to main dir
-          DISTRO=drone bitbake fog-px4-msgs-deb-package-build-image
+          DISTRO=drone bitbake px4-msgs
           popd > /dev/null
 
       - name: Upload build
