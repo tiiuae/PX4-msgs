@@ -16,6 +16,7 @@ jobs:
         run: |
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          df -h
 
       - name: Checkout drone-yocto repo
         uses: actions/checkout@v3
