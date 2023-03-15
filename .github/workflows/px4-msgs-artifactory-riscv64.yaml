@@ -27,7 +27,7 @@ jobs:
           repository: tiiuae/drone-yocto
           ref: fog_hyper_supports
           submodules: recursive
-          token: ${{ secrets.ACCESS_REPO_TOKEN }}
+          ssh-key: ${{ secrets.ACCESS_REPO_TOKEN }}
           path: drone-yocto
 
       - name: Checkout px4_msgs repo
