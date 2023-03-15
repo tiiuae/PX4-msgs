@@ -27,7 +27,7 @@ jobs:
           repository: tiiuae/drone-yocto
           ref: fog_hyper_supports
           submodules: recursive
-          ssh-key: ${{ secrets.ACCESS_REPO_TOKEN }}
+          token: ${{ secrets.ACCESS_REPO_TOKEN }}
           path: drone-yocto
 
       - name: Checkout px4_msgs repo
@@ -84,7 +84,7 @@ jobs:
         with:
           name: px4_msgs_riscv64
           path: bin/build_output
-      - uses: jfrog/setup-jfrog-cli@v2
+      - uses: jfrog/setup-jfrog-cli@v3
         env:
           JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY_TOKEN }}
       - name: Upload to Artifactory
