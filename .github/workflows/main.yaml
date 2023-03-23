@@ -38,7 +38,7 @@ jobs:
         with:
           name: px4_msgs
           path: bin
-      - uses: jfrog/setup-jfrog-cli@v2
+      - uses: jfrog/setup-jfrog-cli@v3
         env:
           JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY_TOKEN }}
       - name: Upload to Artifactory
