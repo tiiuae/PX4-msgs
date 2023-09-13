@@ -2,9 +2,9 @@ name: main
 
 on:
   push:
-    branches: [ humble_main ]
+    branches: [ main ]
   pull_request:
-    branches: [ humble_main ]
+    branches: [ main ]
 
 jobs:
   tii-px4-msgs-deb:

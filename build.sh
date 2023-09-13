@@ -7,6 +7,7 @@ build_number=${GITHUB_RUN_NUMBER:=0}
 
 docker build \
     --build-arg BUILD_NUMBER=${build_number} \
+    --output type=docker \
     -t "tii-px4-msgs:px4-msgs" .
 
 container_id=$(docker create tii-px4-msgs:px4-msgs)
