@@ -4,6 +4,26 @@
 
 This package contains the ROS2 message definitions of the [PX4 Pro ecosystem](https://px4.io/). Building this package generates all the required interfaces to interface ROS2 nodes with the PX4 autopilot internals, which use the [uORB messaging API](https://dev.px4.io/en/middleware/uorb.html). Currently the messages of this package represent a dependency to [`px4_ros_com` package](https://github.com/PX4/px4_ros_com).
 
+
+### Copy the deb packages to your local directory
+```bash
+docker create --name px4-msgs-artifacts ghcr.io/tiiuae/tiiuae/tii-px4-msgs:main
+mkdir -p /tmp/px4_msgs_debs/bin
+docker cp px4-msgs-artifacts:/artifacts/. /tmp/px4_msgs_debs/bin/
+docker rm px4-msgs-artifacts
+ls -la /tmp/px4_msgs_debs/bin
+```
+
+### Copy and install deb packages in Dockerfile
+Modify the tag name accordingly. The baseimage is given as an example, could be used any that has the ros2 installed. If the ROS2 installation is done later, install the deb packages after the ROS2 installation.
+```Dockerfile
+FROM ros:humble-ros-base
+
+RUN mkdir -p /tmp/px4_msgs_debs
+COPY --from=ghcr.io/tiiuae/tii-px4-msgs:main /artifacts/*.deb /tmp/px4_msgs_debs/
+RUN dpkg -i /tmp/px4_msgs_debs/*.deb && rm -rf /tmp/px4_msgs_debs
+```
+
 ## uORB message definitions
 
 The uORB message definitions, which represent the counter-part of the ROS2 messages found in this package, can be found on the [PX4 Firmware repository](https://github.com/PX4/Firmware).
