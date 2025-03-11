@@ -22,7 +22,7 @@ jobs:
           ./build.sh ../bin/
           popd
       - name: Upload build
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: px4_msgs
           path: bin/*.deb
