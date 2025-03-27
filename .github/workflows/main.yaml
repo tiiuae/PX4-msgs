@@ -80,7 +80,7 @@ jobs:
             GIT_VERSION_STRING=${{ steps.vars.outputs.SHORT_GIT_VERSION_STRING }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          provenance: mode=min
+          provenance: false
 
       - name: Create container and copy deb packages
         run: |
