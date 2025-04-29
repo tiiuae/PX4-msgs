@@ -4,6 +4,11 @@
 
 This package contains the ROS2 message definitions of the [PX4 Pro ecosystem](https://px4.io/). Building this package generates all the required interfaces to interface ROS2 nodes with the PX4 autopilot internals, which use the [uORB messaging API](https://dev.px4.io/en/middleware/uorb.html). Currently the messages of this package represent a dependency to [`px4_ros_com` package](https://github.com/PX4/px4_ros_com).
 
+## Utilize the built images from the GHCR docker images
+The package is built and published as a docker image on top of the `ros:humble-ros-base`. Therefore, it should be OK to install these packages on your local Ubuntu Jammy environment or in a docker image.
+
+> [!WARNING]
+> Keep in mind that this is not compatible with the images based on fog-ros-baseimage. This package should only to be used for development purposes.
 
 ### Copy the deb packages to your local directory
 ```bash

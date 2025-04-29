@@ -111,6 +111,7 @@ fi
 export DEB_BUILD_OPTIONS="parallel=`nproc` nocheck"
 
 # generates makefile at debian/rules, which is used to invoke the actual build.
+# jammy defined as os-version since the ros:humble-ros-base (the build docker image) is based on ubuntu:22.04
 bloom-generate rosdebian --os-name ubuntu --os-version jammy --ros-distro ${ROS_DISTRO} --place-template-files
 
 sed -i "s/@(DebianInc)@(Distribution)/@(DebianInc)/" debian/changelog.em
