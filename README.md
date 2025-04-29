@@ -11,8 +11,9 @@ The package is built and published as a docker image on top of the `ros:humble-r
 > Keep in mind that this is not compatible with the images based on fog-ros-baseimage. This package should only to be used for development purposes.
 
 ### Copy the deb packages to your local directory
+Modify the tag name accordingly for revision and ros distro name.
 ```bash
-docker create --name px4-msgs-artifacts ghcr.io/tiiuae/tiiuae/tii-px4-msgs:main
+docker create --name px4-msgs-artifacts ghcr.io/tiiuae/tiiuae/tii-px4-msgs:main-humble
 mkdir -p /tmp/px4_msgs_debs/bin
 docker cp px4-msgs-artifacts:/artifacts/. /tmp/px4_msgs_debs/bin/
 docker rm px4-msgs-artifacts
@@ -25,7 +26,7 @@ Modify the tag name accordingly. The baseimage is given as an example, could be 
 FROM ros:humble-ros-base
 
 RUN mkdir -p /tmp/px4_msgs_debs
-COPY --from=ghcr.io/tiiuae/tii-px4-msgs:main /artifacts/*.deb /tmp/px4_msgs_debs/
+COPY --from=ghcr.io/tiiuae/tii-px4-msgs:main-humble /artifacts/*.deb /tmp/px4_msgs_debs/
 RUN dpkg -i /tmp/px4_msgs_debs/*.deb && rm -rf /tmp/px4_msgs_debs
 ```
 

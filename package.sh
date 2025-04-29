@@ -109,17 +109,19 @@ fi
 # --parallel flag is needed in "fakeroot debian/rules binary" call.
 # nocheck disables the build-time tests. For arm64, it can take quite a while.
 export DEB_BUILD_OPTIONS="parallel=`nproc` nocheck"
+export OS_VERSION=$(grep UBUNTU_CODENAME /etc/os-release | cut -d= -f2)
+echo "[INFO] Building for OS: ${OS_VERSION}."
 
 # generates makefile at debian/rules, which is used to invoke the actual build.
 # jammy defined as os-version since the ros:humble-ros-base (the build docker image) is based on ubuntu:22.04
-bloom-generate rosdebian --os-name ubuntu --os-version jammy --ros-distro ${ROS_DISTRO} --place-template-files
+bloom-generate rosdebian --os-name ubuntu --os-version ${OS_VERSION} --ros-distro ${ROS_DISTRO} --place-template-files
 
 sed -i "s/@(DebianInc)@(Distribution)/@(DebianInc)/" debian/changelog.em
 
 # modify the distribution in the template and ignore warnings from sed and not stop the script.
 [ ! "$distr" = "" ] && sed -i "s/@(Distribution)/${distr}/" debian/changelog.em || :
 
-bloom-generate rosdebian --os-name ubuntu --os-version jammy --ros-distro ${ROS_DISTRO} --process-template-files -i ${build_nbr}${git_version_string}
+bloom-generate rosdebian --os-name ubuntu --os-version ${OS_VERSION} --ros-distro ${ROS_DISTRO} --process-template-files -i ${build_nbr}${git_version_string}
 
 sed -i 's/^\tdh_shlibdeps.*/& --dpkg-shlibdeps-params=--ignore-missing-info/g' debian/rules
 

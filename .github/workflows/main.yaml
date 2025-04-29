@@ -17,6 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         architecture: [amd64, arm64]
+        ros_distro: [humble, jazzy] # Also need update in merge step if changed
     runs-on: ${{ matrix.architecture == 'amd64' && 'ubuntu-latest' || 'ubuntu-24.04-arm' }}
     # Github hosted arm runners are in public preview, so there are no ubuntu-latest-arm images yet
     outputs:
@@ -58,11 +59,11 @@ jobs:
         with:
           images: ghcr.io/tiiuae/tii-px4-msgs
           tags: |
-            type=ref,event=branch,suffix=-${{ matrix.architecture }}
-            type=ref,event=pr,suffix=-${{ matrix.architecture }}
-            type=semver,pattern={{raw}},suffix=-${{ matrix.architecture }}
-            type=sha,suffix=-${{ matrix.architecture }}
-            type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
+            type=ref,event=branch,suffix=-${{ matrix.architecture }}-${{ matrix.ros_distro }}
+            type=ref,event=pr,suffix=-${{ matrix.architecture }}-${{ matrix.ros_distro }}
+            type=semver,pattern={{raw}},suffix=-${{ matrix.architecture }}-${{ matrix.ros_distro }}
+            type=sha,suffix=-${{ matrix.architecture }}-${{ matrix.ros_distro }}
+            type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }},suffix=-${{ matrix.architecture }}-${{ matrix.ros_distro }}
 
       - name: Build and push debian package container
         uses: docker/build-push-action@v5
@@ -75,6 +76,7 @@ jobs:
           platforms: linux/${{ matrix.architecture }}
           build-args: |
             PACKAGE_NAME=px4-msgs
+            ROS_DISTRO=${{ matrix.ros_distro }}
             GIT_RUN_NUMBER=${{ github.run_number }}
             GIT_COMMIT_HASH=${{ github.sha }}
             GIT_VERSION_STRING=${{ steps.vars.outputs.SHORT_GIT_VERSION_STRING }}
@@ -84,14 +86,14 @@ jobs:
 
       - name: Create container and copy deb packages
         run: |
-          docker create -ti --name "px4-msgs-build-temp-${{ matrix.architecture }}" --platform=linux/${{ matrix.architecture }} $(echo "${{ steps.meta.outputs.tags }}" | head -1) bash
-          docker cp "px4-msgs-build-temp-${{ matrix.architecture }}:/artifacts/." ./output_dir
-          docker rm "px4-msgs-build-temp-${{ matrix.architecture }}"
+          docker create -ti --name "px4-msgs-build-temp-${{ matrix.architecture }}-${{ matrix.ros_distro }}" --platform=linux/${{ matrix.architecture }} $(echo "${{ steps.meta.outputs.tags }}" | head -1) bash
+          docker cp "px4-msgs-build-temp-${{ matrix.architecture }}-${{ matrix.ros_distro }}:/artifacts/." ./output_dir
+          docker rm "px4-msgs-build-temp-${{ matrix.architecture }}-${{ matrix.ros_distro }}"
 
       - name: Upload .deb packages as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: deb-packages-${{ matrix.architecture }}
+          name: deb-packages-${{ matrix.architecture }}-${{ matrix.ros_distro }}
           path: ./output_dir/*.deb
 
   merge_images:
@@ -125,8 +127,12 @@ jobs:
           echo "Debug: Tags are ${{ steps.meta.outputs.tags }}"
           echo "${{ steps.meta.outputs.tags }}" | while read -r tag; do
             echo "Creating manifest for tag: $tag"
-            docker manifest create "$tag" \
-              "$tag-amd64" \
-              "$tag-arm64"
-            docker manifest push "$tag"
+            docker manifest create "$tag-humble" \
+              "$tag-amd64-humble" \
+              "$tag-arm64-humble"
+            docker manifest push "$tag-humble"
+            docker manifest create "$tag-jazzy" \
+              "$tag-amd64-jazzy" \
+              "$tag-arm64-jazzy"
+            docker manifest push "$tag-jazzy"
           done

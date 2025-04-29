@@ -1,4 +1,5 @@
-FROM ros:humble-ros-base AS builder
+ARG ROS_DISTRO="humble"
+FROM ros:${ROS_DISTRO}-ros-base AS builder
 
 ARG GIT_RUN_NUMBER
 ARG GIT_COMMIT_HASH
