@@ -57,8 +57,6 @@ set(msg_files
 	ButtonEvent.msg
 	CalibrationCommand.msg
 	CalibrationStatus.msg
-	CalibrationHealthCommand.msg
-	CalibrationHealthStatus.msg
 	CameraCapture.msg
 	CameraStatus.msg
 	CameraTrigger.msg
