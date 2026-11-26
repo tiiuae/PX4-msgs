@@ -2,6 +2,8 @@
 # Used for acknowledging the vehicle command being received.
 # Follows the MAVLink COMMAND_ACK message definition
 
+uint32 MESSAGE_VERSION = 0
+
 uint64 timestamp		# time since system start (microseconds)
 
 # Result cases. This follows the MAVLink MAV_RESULT enum definition
@@ -31,3 +33,5 @@ uint8 target_system
 uint16 target_component 				# Target component / mode executor
 
 bool from_external					# Indicates if the command came from an external source
+
+# TOPICS vehicle_command_ack critical_act_resp

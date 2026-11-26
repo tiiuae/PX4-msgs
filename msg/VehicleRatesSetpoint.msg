@@ -1,6 +1,8 @@
+uint32 MESSAGE_VERSION = 0
+
 uint64 timestamp	# time since system start (microseconds)
 
-# body angular rates in NED frame
+# body angular rates in FRD frame
 float32 roll		# [rad/s] roll rate setpoint
 float32 pitch		# [rad/s] pitch rate setpoint
 float32 yaw		# [rad/s] yaw rate setpoint
@@ -10,3 +12,6 @@ float32 yaw		# [rad/s] yaw rate setpoint
 float32[3] thrust_body	# Normalized thrust command in body NED frame [-1,1]
 
 bool reset_integral # Reset roll/pitch/yaw integrals (navigation logic change)
+
+# TOPICS vehicle_rates_setpoint
+# TOPICS redundant_rates_setpoint0 redundant_rates_setpoint1
